@@ -1,0 +1,37 @@
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+main {
+  margin: 20px 0;
+}
+
+main h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .home {
+      padding: 10px;
+    }
+  
+    h1 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .home {
+      padding: 15px;
+    }
+  
+    h1 {
+      font-size: 28px;
+    }
+  }

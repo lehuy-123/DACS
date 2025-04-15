@@ -1,0 +1,93 @@
+.login {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  main {
+    margin: 20px 0;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #4267b2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  button:hover {
+    background-color: #365899;
+  }
+  
+  button:disabled {
+    background-color: #cccccc; /* Màu xám khi đang loading */
+    cursor: not-allowed;
+  }
+  
+  .facebook-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .login {
+      max-width: 100%;
+      padding: 10px;
+    }
+  
+    main {
+      margin: 10px 0;
+    }
+  
+    h2 {
+      font-size: 20px;
+    }
+  
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  
+    .facebook-icon {
+      font-size: 16px;
+      margin-right: 6px;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .login {
+      max-width: 350px;
+      padding: 15px;
+    }
+  
+    h2 {
+      font-size: 24px;
+    }
+  
+    button {
+      padding: 9px 18px;
+      font-size: 15px;
+    }
+  
+    .facebook-icon {
+      font-size: 17px;
+    }
+  }
+  
+  @media (min-width: 1025px) {
+    h2 {
+      font-size: 28px;
+    }
+  
+    button {
+      font-size: 16px;
+    }
+  }
