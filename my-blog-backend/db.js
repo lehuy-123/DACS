@@ -1,17 +1,12 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
 
-var mongoURL = "mongodb+srv://huy20040801:huy20040801@cluster0.wqh4zt6.mongodb.net/my-blogs"
-
-mongoose.connect(mongoURL, {useUnifiedTopology: true, useNewUrlParser: true})
-
-var connection = mongoose.connection
-
-connection.on('error', () => { 
-   console.log('MongoDB Connection Failed!')
-})
-connection.on('connected', () => { 
-   console.log('MongoDB Connection Successful!')
-})
-
-
-module.exports = mongoose
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('✅ Đã kết nối MongoDB Atlas');
+}).catch(err => {
+  console.error('❌ Lỗi kết nối MongoDB:', err);
+});

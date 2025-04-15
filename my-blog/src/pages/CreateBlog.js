@@ -1,81 +1,81 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import '../styles/CreateBlog.css';
-import api from '../api/api';
 
 const CreateBlog = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState('');
-  const [status, setStatus] = useState('draft');
-  const navigate = useNavigate();
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
-  };
+  const [status, setStatus] = useState('public');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('image', image);
-    formData.append('tags', tags.split(',').map((tag) => tag.trim()));
+    formData.append('tags', tags);
     formData.append('status', status);
+    if (image) formData.append('image', image); // Đảm bảo gửi file ảnh
 
     try {
-      await api.post('/blogs', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await axios.post('http://localhost:5001/api/blogs', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert('Tạo bài viết thành công!');
-      navigate('/my-blogs');
+      navigate('/my-blogs'); // Điều hướng về danh sách bài viết
     } catch (error) {
       console.error('Lỗi khi tạo bài viết:', error);
-      alert('Tạo bài viết thất bại.');
     }
   };
 
   return (
-    <div className="create-blog">
-      <Header />
-      <main>
-        <h2>Tạo bài viết</h2>
-        <form onSubmit={handleSubmit}>
+    <div>
+      <h2>Tạo bài viết mới</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Tiêu đề:</label>
           <input
             type="text"
-            placeholder="Tiêu đề"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
+        </div>
+        <div>
+          <label>Nội dung:</label>
           <textarea
-            placeholder="Nội dung"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
           />
-          <input type="file" accept="image/*" onChange={handleImageChange} required />
-          {imagePreview && <img src={imagePreview} alt="Preview" className="preview-image" />}
+        </div>
+        <div>
+          <label>Ảnh đại diện:</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </div>
+        <div>
+          <label>Tags (cách nhau bởi dấu phẩy):</label>
           <input
             type="text"
-            placeholder="Tags (cách nhau bởi dấu phẩy)"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
           />
+        </div>
+        <div>
+          <label>Trạng thái:</label>
           <select value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="draft">Bản nháp</option>
             <option value="public">Công khai</option>
+            <option value="draft">Bản nháp</option>
           </select>
-          <button type="submit">Tạo bài viết</button>
-        </form>
-      </main>
-      <Footer />
+        </div>
+        <button type="submit">Tạo bài viết</button>
+      </form>
     </div>
   );
 };
