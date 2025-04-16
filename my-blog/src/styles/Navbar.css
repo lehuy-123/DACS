@@ -1,89 +1,70 @@
+/* Navbar.css */
 .navbar {
-    background-color: #f8f8f8;
-    padding: 10px 20px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .nav-links {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-  
-  .nav-links a {
-    margin-left: 20px;
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-  }
-  
-  .nav-links a:hover {
-    color: #bbbbbb;
-  }
-  
-  .nav-links button {
-    margin-left: 20px;
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .nav-links button:hover {
-    color: #d7d7d7;
-  }
-  
+  background-color: #007bff;
+  padding: 15px 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a,
+.nav-links button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  background-color: #0056b3;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
   .hamburger {
+    display: block;
+  }
+
+  .nav-links {
     display: none;
-    background: #9f9f9f;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #ffffff;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #007bff;
+    padding: 10px 0;
   }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hamburger {
-      display: block;
-    }
-  
-    .nav-links {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      background-color: #f8f8f8;
-      position: absolute;
-      top: 60px;
-      left: 0;
-      padding: 10px 0;
-      border-bottom: 1px solid #ddd;
-    }
-  
-    .nav-links.open {
-      display: flex;
-    }
-  
-    .nav-links a,
-    .nav-links button {
-      margin: 10px 0;
-      text-align: center;
-      font-size: 14px;
-    }
+
+  .nav-links.open {
+    display: flex;
   }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .nav-links a,
-    .nav-links button {
-      margin-left: 15px;
-      font-size: 15px;
-    }
+
+  .nav-links a,
+  .nav-links button {
+    padding: 10px 20px;
+    width: 100%;
+    text-align: left;
   }
-  
-  @media (min-width: 1025px) {
-    .nav-links a,
-    .nav-links button {
-      font-size: 16px;
-    }
-  }
+}

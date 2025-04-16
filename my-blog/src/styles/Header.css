@@ -1,51 +1,35 @@
+/* Header.css */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #ddd;
+  background-color: #f8f9fa;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  border-bottom: 1px solid #ddd;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin: 0 0 10px;
+}
+
+.header span {
+  font-size: 1rem;
+  color: #555;
+  display: block;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 15px;
   }
-  
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
   .header span {
-    margin-right: 20px;
-    font-size: 16px;
-    color: #333;
+    font-size: 0.9rem;
   }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .header {
-      flex-direction: row;
-      padding: 10px;
-    }
-  
-    h1 {
-      font-size: 24px;
-    }
-  
-    .header span {
-      font-size: 14px;
-      margin-right: 10px;
-    }
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .header {
-      padding: 15px;
-    }
-  
-    h1 {
-      font-size: 28px;
-    }
-  
-    .header span {
-      font-size: 15px;
-    }
-  }
-  
-  @media (min-width: 1025px) {
-    h1 {
-      font-size: 32px;
-    }
-  }
+}

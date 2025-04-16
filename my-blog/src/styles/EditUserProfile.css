@@ -1,63 +1,64 @@
+/* EditUserProfile.css */
 .edit-user-profile {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.edit-user-profile main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.edit-user-profile h2 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.edit-user-profile form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-user-profile input,
+.edit-user-profile textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.edit-user-profile textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.edit-user-profile .preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.edit-user-profile button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.edit-user-profile button:hover {
+  background-color: #218838;
+}
+
+@media (max-width: 600px) {
+  .edit-user-profile main {
+    padding: 15px;
   }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  input,
-  textarea {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-  
-  .preview-image {
-    max-width: 100%;
-    height: auto;
-    margin-top: 10px;
-    border-radius: 8px;
-  }
-  
-  button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .edit-user-profile {
-      padding: 10px;
-    }
-  
-    input,
-    textarea {
-      font-size: 14px;
-      padding: 8px;
-    }
-  
-    button {
-      padding: 8px;
-      font-size: 14px;
-    }
-  }
+}

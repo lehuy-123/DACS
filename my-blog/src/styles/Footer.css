@@ -1,22 +1,23 @@
+/* Footer.css */
 .footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #f8f8f8;
-    border-top: 1px solid #ddd;
-    margin-top: 20px;
+  background-color: #171361;
+  color: rgb(239, 236, 236);
+  text-align: center;
+  padding: 15px 0;
+  font-family: 'Arial', sans-serif;
+  font-size: 0.9rem;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding: 10px 0;
+    font-size: 0.8rem;
   }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .footer {
-      padding: 15px;
-      font-size: 14px;
-    }
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .footer {
-      padding: 18px;
-      font-size: 16px;
-    }
-  }
+}

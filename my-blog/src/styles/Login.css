@@ -1,93 +1,59 @@
+/* Login.css */
 .login {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+}
+
+.login main {
+  text-align: center;
+  padding: 20px;
+}
+
+.login h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.login button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background-color: #3b5998;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login button:hover {
+  background-color: #2f477a;
+}
+
+.login button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.login .facebook-icon {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .login h2 {
+    font-size: 1.8rem;
   }
-  
-  main {
-    margin: 20px 0;
-  }
-  
-  button {
+
+  .login button {
     padding: 10px 20px;
-    background-color: #4267b2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 0.9rem;
   }
-  
-  button:hover {
-    background-color: #365899;
-  }
-  
-  button:disabled {
-    background-color: #cccccc; /* Màu xám khi đang loading */
-    cursor: not-allowed;
-  }
-  
-  .facebook-icon {
-    margin-right: 8px;
-    font-size: 18px;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .login {
-      max-width: 100%;
-      padding: 10px;
-    }
-  
-    main {
-      margin: 10px 0;
-    }
-  
-    h2 {
-      font-size: 20px;
-    }
-  
-    button {
-      padding: 8px 16px;
-      font-size: 14px;
-    }
-  
-    .facebook-icon {
-      font-size: 16px;
-      margin-right: 6px;
-    }
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .login {
-      max-width: 350px;
-      padding: 15px;
-    }
-  
-    h2 {
-      font-size: 24px;
-    }
-  
-    button {
-      padding: 9px 18px;
-      font-size: 15px;
-    }
-  
-    .facebook-icon {
-      font-size: 17px;
-    }
-  }
-  
-  @media (min-width: 1025px) {
-    h2 {
-      font-size: 28px;
-    }
-  
-    button {
-      font-size: 16px;
-    }
-  }
+}
