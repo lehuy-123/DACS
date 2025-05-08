@@ -1,51 +1,128 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const passport = require('passport');
+const FacebookStrategy = require('passport-facebook').Strategy;
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
+
 const BlogRoutes = require('./routes/BlogRoutes');
-require('./db'); // Kết nối MongoDB
+const UserRoutes = require('./routes/UserRoutes');
+const AuthRoutes = require('./routes/AuthRoutes');
+const TestRoutes = require('./routes/TestRoutes');
+const UploadRoutes = require('./routes/UploadRoutes');
+const authenticateToken = require('./middleware/authMiddleware');
+require('./db'); // Kết nối MongoD/
 
 dotenv.config();
 
 const app = express();
 
-// Cấu hình CORS cho mọi domain (chỉ nên dùng trong dev)
-const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// ✅ Middleware chung - ĐÃ SỬA CORS CHUẨN
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001'], // ✅ Cho phép cả 3000 và 3001
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],         // ✅ Thêm PATCH
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
     optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Xử lý preflight
+}));
+app.use(express.json());
 
-app.use(express.json()); // Parse JSON body
-app.use('/uploads', express.static('uploads')); // Phục vụ file tĩnh
+app.use('/api/users', authenticateToken, UserRoutes);
+app.use('/api', UploadRoutes);  // ✅ thêm mới
 
-// Routes
-app.use('/api/blogs', BlogRoutes); // ✅ đúng tên biến
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
-// Test route
+// ✅ Tạo thư mục uploads nếu chưa có
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+// ✅ Cấu hình Passport Facebook
+app.use(passport.initialize());
+
+if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
+    console.error('❌ Thiếu FACEBOOK_APP_ID hoặc FACEBOOK_APP_SECRET trong file .env');
+    process.exit(1);
+}
+
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: 'http://localhost:5001/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'email', 'photos']
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const User = require('./models/User');
+        let user = await User.findOne({ facebookId: profile.id });
+
+        if (!user) {
+            user = new User({
+                facebookId: profile.id,
+                name: profile.displayName,
+                email: profile.emails?.[0]?.value || '',
+                avatar: profile.photos?.[0]?.value || ''
+            });
+            await user.save();
+        }
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'default_secret', { expiresIn: '24h' });
+        return done(null, { user, token });
+    } catch (err) {
+        return done(err, null);
+    }
+}));
+
+// ✅ Route Facebook login
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { session: false }),
+    (req, res) => {
+        const { user, token } = req.user;
+        res.redirect(`http://localhost:3001/login?token=${token}&user=${encodeURIComponent(JSON.stringify({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar
+        }))}`);
+    }
+);
+
+// ✅ Các route chính
+app.use('/api/auth', AuthRoutes);
+app.use('/api', TestRoutes); // Route test token
+app.use('/api/blogs', BlogRoutes); // Public
+app.use('/api/users', authenticateToken, UserRoutes); // Private
+
+// ✅ Route test server
 app.get('/test', (req, res) => {
-    res.status(200).json({ message: 'Server is working' });
+    res.status(200).json({ message: 'Server đang hoạt động' });
 });
 
-// Global error handler
+// ✅ Global error handler
 app.use((err, req, res, next) => {
-    console.error('Error:', err.stack);
-    res.status(500).send('Internal Server Error');
+    console.error('❌ Lỗi:', err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Lỗi máy chủ nội bộ',
+        error: err.message
+    });
 });
 
-// Khởi động server
-const port = process.env.PORT || 5001;
-app.listen(port, () => {
-    console.log(`Node Server Started on port ${port}`);
+// ✅ Start server
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+    console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
 });
 
 
+/* nếu local http://localhost:3001 như này thì check lại file server.js sửa lại  res.redirect(`http://localhost:3001/login?token=${token}&user=${encodeURIComponent(JSON.stringify( 
+ dòng này nữa:  callbackURL: 'http://localhost:5001/auth/facebook/callback'
+ check lại home.js sửa này nữa  const response = await axios.get('http://localhost:5001/api/blogs');
 
-
-/*cách 1:  đổi thành 5001 trong server.js và env: vì tam khai báo 1 host phụ để tránh việc chạy trùng lặp với 1 servẻ khác đang chạy ngầm 
-cách 2: lsof -i :5000 kiểm tra ở terminal xem host 5000 có đang chạy ngầm bởi server hay pm nào ko
-nếu có thì kill vd: ControlCe 33992 lehuy ... TCP *:commplex-main (LISTEN) ta sẽ dùng kill -9 33992
- */
-
+ đảm bảo trùng với link local đang chạy
+ ,/*/

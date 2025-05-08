@@ -1,263 +1,148 @@
-/* BlogList.css */
+/* Tổng container */
 .blog-list-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', 'Arial', sans-serif;
-  background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-  padding: 40px 20px;
-  animation: fadeIn 0.8s ease-in-out;
+  background: linear-gradient(135deg, #f8fafc, #e0f2fe);
 }
 
+/* Nội dung */
 .blog-list-content {
-  max-width: 1200px;
-  margin: 0 auto;
   flex: 1;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Tiêu đề */
 .blog-list-content h2 {
   font-size: 2.5rem;
-  color: #1a202c;
-  text-align: center;
-  margin-bottom: 40px;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  color: #1e3a8a;
+  margin-bottom: 30px;
   position: relative;
+  text-align: center;
 }
 
 .blog-list-content h2::after {
   content: '';
-  display: block;
-  width: 60px;
+  width: 70px;
   height: 4px;
-  background: #007bff;
-  margin: 10px auto 0;
+  background: #3b82f6;
+  display: block;
+  margin: 12px auto 0;
   border-radius: 2px;
 }
 
+/* Grid blogs */
 .blogs-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 25px;
-  padding: 10px 0;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  width: 100%;
 }
 
+/* Card mỗi bài */
 .blog-card {
-  background: white;
+  background: #ffffff;
   border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 123, 255, 0.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  animation: slideUp 0.5s ease-in-out forwards;
-  opacity: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.blog-card:nth-child(1) { animation-delay: 0.1s; }
-.blog-card:nth-child(2) { animation-delay: 0.2s; }
-.blog-card:nth-child(3) { animation-delay: 0.3s; }
-.blog-card:nth-child(4) { animation-delay: 0.4s; }
-.blog-card:nth-child(5) { animation-delay: 0.5s; }
 
 .blog-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15);
-  border-color: rgba(0, 123, 255, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
 }
 
-.blog-card img {
+/* Ảnh */
+.blog-image {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
   border-radius: 8px;
-  transition: transform 0.3s ease;
+  margin-bottom: 16px;
 }
 
-.blog-card:hover img {
-  transform: scale(1.05);
+/* Tiêu đề bài viết */
+.blog-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
-.blog-card h3 {
-  font-size: 1.6rem;
-  margin: 0;
-  font-weight: 600;
-  color: #1a202c;
-}
-
-.blog-card h3 a {
+.blog-title a {
   text-decoration: none;
-  color: #007bff;
-  transition: color 0.3s ease;
+  color: #1e40af;
+  transition: color 0.3s;
 }
 
-.blog-card h3 a:hover {
-  color: #0056b3;
+.blog-title a:hover {
+  color: #2563eb;
 }
 
-.blog-card p {
-  font-size: 1rem;
-  color: #4a5568;
-  margin: 5px 0;
-  line-height: 1.6;
+/* Nội dung tóm tắt */
+.blog-content {
+  font-size: 14px;
+  color: #6b7280;
+  height: 40px;
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 
+/* Metadata */
 .blog-meta {
-  font-size: 0.9rem;
-  color: #718096;
-  margin-top: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 16px;
 }
 
-.blog-meta span {
-  color: #2d3748;
-  font-weight: 500;
-}
-
+/* Các hành động */
 .blog-actions {
+  margin-top: auto;
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .blog-actions a,
 .blog-actions button {
-  padding: 8px 16px;
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
   border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  transition: background 0.3s;
 }
 
-.blog-actions .edit-btn {
-  background: #28a745;
+/* Sửa */
+.edit-btn {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.edit-btn:hover {
+  background-color: #fbbf24;
+}
+
+/* Xóa */
+.delete-btn {
+  background-color: #ef4444;
   color: white;
 }
 
-.blog-actions .edit-btn:hover {
-  background: #218838;
-  transform: translateY(-1px);
-}
-
-.blog-actions .delete-btn {
-  background: #dc3545;
-  color: white;
-}
-
-.blog-actions .delete-btn:hover {
-  background: #c82333;
-  transform: translateY(-1px);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 900px) {
-  .blogs-list {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .blog-card img {
-    height: 120px;
-  }
-
-  .blog-card h3 {
-    font-size: 1.4rem;
-  }
-
-  .blog-list-content h2 {
-    font-size: 2.2rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .blogs-list {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .blog-card {
-    padding: 15px;
-  }
-
-  .blog-card img {
-    height: 200px;
-  }
-
-  .blog-list-content {
-    padding: 15px;
-  }
-
-  .blog-list-content h2 {
-    font-size: 2rem;
-  }
-
-  .blog-card h3 {
-    font-size: 1.3rem;
-  }
-
-  .blog-card p {
-    font-size: 0.95rem;
-  }
-
-  .blog-meta {
-    font-size: 0.85rem;
-  }
-
-  .blog-actions a,
-  .blog-actions button {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .blog-list-content h2 {
-    font-size: 1.8rem;
-  }
-
-  .blog-card h3 {
-    font-size: 1.2rem;
-  }
-
-  .blog-card p {
-    font-size: 0.9rem;
-  }
-
-  .blog-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .blog-actions a,
-  .blog-actions button {
-    width: 100%;
-  }
+.delete-btn:hover {
+  background-color: #dc2626;
 }

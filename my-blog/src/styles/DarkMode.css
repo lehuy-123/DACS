@@ -1,0 +1,70 @@
+/* DarkMode.css */
+.dark-mode-toggle {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    margin: 20px auto;
+    display: block;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  body.dark-mode .dark-mode-toggle {
+    border-color: #555;
+    color: #f5f5f5;
+  }
+
+
+
+
+
+
+
+
+  
+  /* Body chung */
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+  }
+  
+  /* Sidebar */
+  body.dark-mode .sidebar {
+    background-color: #181818;
+    color: #f1f1f1;
+    border-right: 1px solid #333;
+  }
+  
+  /* Header nếu có */
+  body.dark-mode .header {
+    background-color: #181818;
+    color: #f1f1f1;
+    border-bottom: 1px solid #333;
+  }
+  
+  /* Container nội dung (home-container) */
+  body.dark-mode .home-container {
+    background-color: #121212;
+  }
+  
+  /* Card bài viết */
+  body.dark-mode .blog-card {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+  }
+  
+  /* Text trong blog card */
+  body.dark-mode .blog-card h3,
+  body.dark-mode .blog-card p {
+    color: #e0e0e0;
+  }
+  
+  /* Nút chuyển Dark/Light */
+  body.dark-mode .dark-mode-toggle {
+    color: #f1f1f1;
+    border-color: #555;
+  }
+  

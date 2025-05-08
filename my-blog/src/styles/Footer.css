@@ -1,23 +1,14 @@
-/* Footer.css */
-.footer {
-  background-color: #171361;
-  color: rgb(239, 236, 236);
+.footer-vnexpress {
+  background-color: #8c3351;  /* nền xám nhạt */
+  padding: 20px 10px;
   text-align: center;
-  padding: 15px 0;
-  font-family: 'Arial', sans-serif;
-  font-size: 0.9rem;
-  position: relative;
-  bottom: 0;
-  width: 100%;
+  border-top: 1px solid #ddd;
 }
 
-.footer p {
-  margin: 0;
-}
-
-@media (max-width: 600px) {
-  .footer {
-    padding: 10px 0;
-    font-size: 0.8rem;
-  }
+.footer-vnexpress .footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 13px;
+  color: #ffffff;
+  line-height: 1.6;
 }

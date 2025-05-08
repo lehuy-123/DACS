@@ -8,50 +8,95 @@ import api from '../api/api';
 const EditUserProfile = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [bio, setBio] = useState('');
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [userId, setUserId] = useState('');
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await api.get('/users/1');
-        const user = response.data;
-        setName(user.name);
-        setEmail(user.email);
-        setBio(user.bio);
-        setAvatarPreview(user.avatar);
-      } catch (error) {
-        console.error('Lỗi khi lấy thông tin người dùng:', error);
+  // Hàm fetch thông tin người dùng
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Bạn chưa đăng nhập. Vui lòng đăng nhập lại.');
+        navigate('/login');
+        return;
       }
-    };
+
+      const res = await api.get('/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const user = res.data.data;
+      setUserId(user._id);
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setAvatarPreview(user.avatar ? `http://localhost:5001${user.avatar}` : null);
+      // Lưu thông tin người dùng mới vào localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+    } catch (err) {
+      console.error('Lỗi khi fetch user:', err);
+      setError('Không thể tải thông tin người dùng.');
+      navigate('/login');
+    }
+  };
+
+  useEffect(() => {
     fetchUser();
-  }, []);
+  }, [navigate]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
-    setAvatar(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    if (file) {
+      setAvatar(file);
+      setAvatarPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('bio', bio);
-    if (avatar) formData.append('avatar', avatar);
+    setError(null);
+    setSuccess(null);
+
+    if (!name.trim() || !email.trim()) {
+      setError('Vui lòng điền đầy đủ họ tên và email.');
+      return;
+    }
 
     try {
-      await api.put('/users/1', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Bạn chưa đăng nhập.');
+        navigate('/login');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      if (avatar) {
+        formData.append('avatar', avatar);
+      }
+
+      const res = await api.put('/auth/update-profile', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      alert('Cập nhật thông tin thành công!');
-      navigate('/profile');
-    } catch (error) {
-      console.error('Lỗi khi cập nhật thông tin:', error);
-      alert('Cập nhật thông tin thất bại.');
+
+      if (res.data.success) {
+        setSuccess('Cập nhật thành công!');
+        await fetchUser(); // Cập nhật state local và localStorage
+      } else {
+        setError(res.data.message || 'Có lỗi xảy ra.');
+      }
+    } catch (err) {
+      console.error('Lỗi khi cập nhật profile:', err);
+      const msg = err.response?.data?.message || 'Có lỗi xảy ra khi cập nhật.';
+      setError(msg);
     }
   };
 
@@ -60,29 +105,52 @@ const EditUserProfile = () => {
       <Header />
       <main>
         <h2>Chỉnh sửa hồ sơ</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Tên"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <textarea
-            placeholder="Giới thiệu bản thân"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-          />
-          <input type="file" accept="image/*" onChange={handleAvatarChange} />
-          {avatarPreview && <img src={avatarPreview} alt="Preview" className="preview-image" />}
-          <button type="submit">Cập nhật</button>
+          <div className="avatar-section">
+            {avatarPreview ? (
+              <img src={avatarPreview} alt="Avatar Preview" className="preview-image" />
+            ) : (
+              <div className="avatar-placeholder">Chưa có avatar</div>
+            )}
+            <div className="avatar-buttons">
+              <label className="choose-avatar">
+                Tải ảnh mới
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Họ tên</label>
+            <input
+              type="text"
+              placeholder="Tên"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-buttons">
+            <button type="submit" className="update-button">
+              Cập nhật
+            </button>
+          </div>
         </form>
       </main>
       <Footer />

@@ -34,14 +34,22 @@ const blogSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['draft', 'public'],
-    default: 'public'
+    enum: ['draft', 'pending', 'approved', 'rejected', 'public'],  // ✅ Thêm các trạng thái cần thiết
+    default: 'pending'  // ✅ Khi user tạo mới sẽ là "pending"
   },
   views: {
     type: Number,
     default: 0
   },
-  comments: [commentSchema], // Thêm trường comments
+  likes: {
+    type: [String],  // Mảng userId (string)
+    default: []
+  },
+  bookmarks: {
+    type: [String],  // Mảng userId (string)
+    default: []
+  },
+  comments: [commentSchema],
   createdAt: {
     type: Date,
     default: Date.now
@@ -52,7 +60,7 @@ const blogSchema = new mongoose.Schema({
   }
 });
 
-blogSchema.pre('save', function(next) {
+blogSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

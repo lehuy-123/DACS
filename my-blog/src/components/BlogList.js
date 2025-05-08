@@ -12,7 +12,7 @@ const BlogList = () => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/blogs');
-        setBlogs(response.data.data); // Lấy dữ liệu từ response
+        setBlogs(response.data.data);
         setLoading(false);
       } catch (error) {
         console.error('Lỗi khi lấy danh sách bài viết:', error);
@@ -37,17 +37,28 @@ const BlogList = () => {
                   <img
                     src={`http://localhost:5001${blog.image}`}
                     alt={blog.title}
+                    className="blog-image"
                   />
                 ) : (
-                  <p>Không có ảnh</p>
+                  <img
+                    src="/images/placeholder.png"
+                    alt="Không có ảnh"
+                    className="blog-image"
+                  />
                 )}
-                <h3>
+
+                <h3 className="blog-title">
                   <a href={`/blog/${blog._id}`}>{blog.title}</a>
                 </h3>
+
+                <p className="blog-content">{blog.content || 'Không có nội dung'}</p>
+
                 <div className="blog-meta">
-                  <p><strong>Lượt xem:</strong> <span>{blog.views || 0}</span></p>
-                  <p><strong>Trạng thái:</strong> <span>{blog.status || 'Public'}</span></p>
+                  <p><strong>Ngày tạo:</strong> {new Date(blog.createdAt).toLocaleDateString()}</p>
+                  <p><strong>Lượt xem:</strong> {blog.views || 0}</p>
+                  <p><strong>Trạng thái:</strong> {blog.status || 'Public'}</p>
                 </div>
+
                 <div className="blog-actions">
                   <a href={`/edit/${blog._id}`} className="edit-btn">Sửa</a>
                   <button
