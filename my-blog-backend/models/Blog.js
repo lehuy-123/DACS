@@ -34,19 +34,19 @@ const blogSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['draft', 'pending', 'approved', 'rejected', 'public'],  // ✅ Thêm các trạng thái cần thiết
-    default: 'pending'  // ✅ Khi user tạo mới sẽ là "pending"
+    enum: ['draft', 'pending', 'approved', 'rejected', 'public'],
+    default: 'pending'
   },
   views: {
     type: Number,
     default: 0
   },
   likes: {
-    type: [String],  // Mảng userId (string)
+    type: [String],
     default: []
   },
   bookmarks: {
-    type: [String],  // Mảng userId (string)
+    type: [String],
     default: []
   },
   comments: [commentSchema],
@@ -57,6 +57,10 @@ const blogSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  userId: {
+    type: String,
+    required: true
   }
 });
 

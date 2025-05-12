@@ -1,0 +1,3 @@
+BLOG có admin, có thể xoá cmt, chỉnh sửa được profile user, full login, signup
+hiện tại có thể lọc theo danh mục, xoá lọc
+chỉ admin đăng bài mới không cần duyệt, còn lại phải chờ duyệt

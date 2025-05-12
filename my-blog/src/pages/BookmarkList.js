@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header'; // ✅ Thêm Header
+import Header from '../components/Header';
 import '../styles/BookmarkList.css';
 
 const BookmarkList = () => {
@@ -20,15 +20,11 @@ const BookmarkList = () => {
       }
 
       try {
-        // Lấy toàn bộ bài viết
         const res = await axios.get('http://localhost:5001/api/blogs');
         const allBlogs = res.data.data || [];
-
-        // Lọc các bài viết mà user đã bookmark
         const bookmarkedBlogs = allBlogs.filter(blog =>
           Array.isArray(blog.bookmarks) && blog.bookmarks.includes(user._id)
         );
-
         setBookmarks(bookmarkedBlogs);
       } catch (error) {
         console.error('Lỗi khi lấy bookmark:', error);
@@ -42,7 +38,7 @@ const BookmarkList = () => {
 
   return (
     <div className="main-layout">
-      <Header /> {/* ✅ Sidebar/Header giống Home */}
+      <Header />
       <div className="bookmark-page">
         <h2 className="bookmark-title">Danh sách bài viết đã lưu</h2>
 
@@ -54,24 +50,33 @@ const BookmarkList = () => {
           <div className="bookmark-grid">
             {bookmarks.map((post) => (
               <div key={post._id} className="bookmark-card">
-                <Link to={`/blog/${post._id}`}>
-                  <img
-                    src={`http://localhost:5001${post.image}`}
-                    alt={post.title}
-                    className="bookmark-image"
-                  />
-                </Link>
-                <div className="bookmark-content">
+                <div className="bookmark-image-container">
+                  <Link to={`/blog/${post._id}`}>
+                    <img
+                      src={`http://localhost:5001${post.image}`}
+                      alt={post.title}
+                      className="bookmark-image"
+                    />
+                  </Link>
                   <span className="bookmark-tag">
                     {post.tags && post.tags.length > 0 ? post.tags[0] : 'No Tag'}
                   </span>
+                </div>
+                <div className="bookmark-content">
                   <h3 className="bookmark-post-title">{post.title}</h3>
                   <p className="bookmark-description">{post.content.slice(0, 100)}...</p>
-                  <p className="bookmark-date">
-                    {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                  </p>
+                  <div className="bookmark-meta">
+                    <p className="bookmark-date">
+                      {new Date(post.createdAt).toLocaleDateString('vi-VN')}
+                    </p>
+                    <p className="bookmark-status">
+                      Trạng thái: {post.status || 'APPROVED'}
+                    </p>
+                  </div>
+                  
+                  </div>
                 </div>
-              </div>
+              
             ))}
           </div>
         )}

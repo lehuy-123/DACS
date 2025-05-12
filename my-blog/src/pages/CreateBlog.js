@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState } from 'react';
 import '../styles/CreateBlog.css';
 import axios from 'axios';
@@ -12,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 
 const CreateBlog = () => {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
@@ -33,12 +30,20 @@ const CreateBlog = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    if (!user || !user._id) {
+      alert('Bạn cần đăng nhập để tạo bài viết!');
+      setIsSubmitting(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
     formData.append('tags', tags);
     formData.append('status', status);
+    formData.append('userId', user._id); // Add userId to formData
     if (image) formData.append('image', image);
+    if (user?.role) formData.append('role', user.role);
 
     try {
       await axios.post('http://localhost:5001/api/blogs', formData, {
@@ -53,7 +58,6 @@ const CreateBlog = () => {
     }
   };
 
-  // ✅ Hỗ trợ upload NHIỀU ảnh cùng lúc
   const handleUploadContentImages = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -63,10 +67,10 @@ const CreateBlog = () => {
       const formData = new FormData();
       formData.append('image', file);
       try {
-        const res = await axios.post('http://localhost:5001/api/upload', formData, {
+        const res = await axios.post('http://localhost:5001/api/blogs/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        const imageUrl = res.data.url;
+        const imageUrl = res.data.data.imageUrl;
         setContent(prev => `${prev}\n\n![Mô tả ảnh](${imageUrl})\n\n`);
       } catch (err) {
         console.error('Lỗi upload ảnh:', err);

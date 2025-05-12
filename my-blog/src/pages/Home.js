@@ -9,6 +9,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('');
+  const [filterType, setFilterType] = useState('');
+  const [uniqueTags, setUniqueTags] = useState([]);
   const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
 
@@ -17,9 +20,24 @@ const Home = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const statusParam = user?.role === 'admin' ? '' : '?status=approved';
-        const res = await axios.get(`http://localhost:5001/api/blogs${statusParam}`);
-        setBlogs(res.data.data || []);
+        let queryParams = [];
+        if (user?.role !== 'admin') queryParams.push('status=approved');
+        if (filterType === 'tag' && filter) queryParams.push(`tag=${filter}`);
+        if (filterType === 'category' && filter) queryParams.push(`category=${filter}`);
+        const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+
+        const res = await axios.get(`http://localhost:5001/api/blogs${queryString}`);
+        const blogsData = res.data.data || [];
+        setBlogs(blogsData);
+
+        // Lấy unique tag từ tất cả bài
+        const tags = new Set();
+        blogsData.forEach((blog) => {
+          if (blog.tags && blog.tags.length > 0) {
+            blog.tags.forEach((tag) => tags.add(tag));
+          }
+        });
+        setUniqueTags(Array.from(tags));
       } catch (error) {
         console.error('Lỗi tải bài viết:', error);
       } finally {
@@ -27,7 +45,7 @@ const Home = () => {
       }
     };
     fetchBlogs();
-  }, []);
+  }, [filter, filterType]);
 
   const handleLikeToggle = async (blogId) => {
     if (!user) {
@@ -61,24 +79,6 @@ const Home = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="home-container">
-        <Header />
-        <main className="home-content">
-          <h1 className="main-title">Chào mừng đến Blog của Tôi</h1>
-          <p className="sub-title">Nơi chia sẻ những kiến thức, cảm hứng và câu chuyện thú vị!</p>
-          <div className="blogs-section">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="skeleton"></div>
-            ))}
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="home-container">
       <Header />
@@ -86,8 +86,40 @@ const Home = () => {
         <h1 className="main-title">Chào mừng đến Blog của Tôi</h1>
         <p className="sub-title">Nơi chia sẻ những kiến thức, cảm hứng và câu chuyện thú vị!</p>
 
+        {/* Dropdown Filter Section */}
+        <div className="dropdown-filter">
+          <div className="dropdown">
+            <button className="dropdown-btn">Danh mục ⌄</button>
+            <div className="dropdown-content">
+              {uniqueTags.map((tag) => (
+                <div
+                  key={tag}
+                  className="dropdown-item"
+                  onClick={() => {
+                    setFilter(tag);
+                    setFilterType('tag');
+                  }}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+          </div>
+          <button
+            className="filter-clear"
+            onClick={() => {
+              setFilter('');
+              setFilterType('');
+            }}
+          >
+            Xóa lọc
+          </button>
+        </div>
+
         <div className="blogs-section">
-          {blogs.length > 0 ? (
+          {loading ? (
+            [...Array(6)].map((_, i) => <div key={i} className="skeleton"></div>)
+          ) : blogs.length > 0 ? (
             blogs.map((blog) => (
               <div key={blog._id} className="blog-card">
                 <div className="blog-card-clickable" onClick={() => navigate(`/blog/${blog._id}`)}>
@@ -135,13 +167,13 @@ const Home = () => {
                       className={`action-btn like ${
                         safeArray(blog.likes).includes(user?._id) ? 'liked' : ''
                       }`}
-                      onClick={() => handleLikeToggle(blog._id)} 
+                      onClick={() => handleLikeToggle(blog._id)}
                     >
                       {safeArray(blog.likes).length} Cảm xúc
                     </button>
                     <i
                       className={`fas ${
-                        safeArray(blog.bookmarks).includes(user?._id) 
+                        safeArray(blog.bookmarks).includes(user?._id)
                           ? 'fa-bookmark'
                           : 'fa-bookmark far'
                       } bookmark-icon`}
@@ -149,12 +181,14 @@ const Home = () => {
                     ></i>
                   </div>
                   <div className="blog-action-right">
-                    <button className="action-btn" onClick={() => navigate(`/blog/${blog._id}`)}> 
+                    <button className="action-btn" onClick={() => navigate(`/blog/${blog._id}`)}>
                       <i className="far fa-comment"></i>
                     </button>
                     <button
                       className="action-btn"
-                      onClick={() => navigator.clipboard.writeText(`${window.location.origin}/blog/${blog._id}`)}
+                      onClick={() =>
+                        navigator.clipboard.writeText(`${window.location.origin}/blog/${blog._id}`)
+                      }
                     >
                       <i className="fas fa-share"></i>
                     </button>

@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import '../styles/UserBlogList.css';
 import axios from 'axios';
@@ -20,7 +14,12 @@ const UserBlogList = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/blogs');
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user._id) {
+          setBlogs([]);
+          return;
+        }
+        const response = await axios.get(`http://localhost:5001/api/blogs/user/${user._id}`);
         setBlogs(response.data.data);
       } catch (error) {
         console.error('Lỗi khi lấy danh sách bài viết:', error);
@@ -31,7 +30,6 @@ const UserBlogList = () => {
     fetchBlogs();
   }, []);
 
-  // ✅ Khi load blogs xong, set trạng thái likedBlogs
   useEffect(() => {
     if (blogs.length > 0 && user) {
       const initialLikes = {};
@@ -141,7 +139,6 @@ const UserBlogList = () => {
                   <button className="action-btn comment"></button>
                   <button className="action-btn share"></button>
                 </div>
-
               </div>
             ))
           ) : (

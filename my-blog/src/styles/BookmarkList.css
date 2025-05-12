@@ -14,17 +14,33 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px; /* Tăng kích thước card */
 }
 
 .bookmark-card:hover {
   transform: translateY(-5px);
 }
 
+.bookmark-image-container {
+  position: relative; /* Để định vị tag ở góc trên trái */
+}
+
 .bookmark-image {
   width: 100%;
-  height: 180px;
+  height: 200px; /* Tăng chiều cao hình ảnh để phù hợp với card lớn hơn */
   object-fit: cover;
+}
+
+.bookmark-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4d4f; /* Màu đỏ giống trang Home */
+  color: #fff;
+  font-size: 0.7rem; /* Thu nhỏ tag */
+  padding: 3px 8px; /* Giảm padding để tag nhỏ hơn */
+  border-radius: 6px;
+  display: inline-block;
 }
 
 .bookmark-content {
@@ -35,31 +51,47 @@
   justify-content: space-between;
 }
 
-.bookmark-tag {
-  background: #007bff;
-  color: #fff;
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border-radius: 8px;
-  display: inline-block;
-  margin-bottom: 15px;
-}
-
 .bookmark-post-title {
-  font-size: 1.2rem;
+  font-size: 1.3rem; /* Tăng kích thước tiêu đề cho phù hợp với card lớn hơn */
   font-weight: 600;
   margin: 0 0 10px;
 }
 
 .bookmark-description {
-  font-size: 0.9rem;
+  font-size: 0.95rem; /* Tăng nhẹ kích thước mô tả */
   color: #555;
+  margin-bottom: 10px;
+}
+
+.bookmark-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
 .bookmark-date {
   font-size: 0.8rem;
   color: #999;
+}
+
+.bookmark-status {
+  font-size: 0.8rem;
+  color: #28a745; /* Màu xanh giống trạng thái APPROVED */
+}
+
+.bookmark-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.bookmark-action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .bookmark-loading,
@@ -84,16 +116,20 @@
 
 .bookmark-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Hiển thị 3 card trên mỗi hàng */
   gap: 25px;
   justify-items: center;
 }
 
-/* ✅ Responsive tweaks */
+/* Responsive tweaks */
 @media (max-width: 1024px) {
   .bookmark-page {
     margin-left: 80px;
     padding: 20px;
+  }
+
+  .bookmark-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 card trên mỗi hàng cho màn hình nhỏ hơn */
   }
 }
 
@@ -108,6 +144,6 @@
   }
 
   .bookmark-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 1 card trên mỗi hàng cho màn hình rất nhỏ */
   }
 }
