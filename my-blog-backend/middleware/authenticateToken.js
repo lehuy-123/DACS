@@ -2,24 +2,26 @@ const jwt = require('jsonwebtoken');
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ message: 'Không có token' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Thiếu hoặc sai định dạng token' });
   }
+
+  const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ FIX: đảm bảo luôn lấy đúng userId từ token do server sinh ra
+    // ✅ Gán id và role từ token
     req.user = {
-      id: decoded.userId || decoded.id || decoded._id || decoded.sub
+      id: decoded.userId || decoded.id || decoded._id || decoded.sub,
+      role: decoded.role || 'user'  // ➕ cần thiết cho checkAdmin
     };
 
     next();
   } catch (err) {
-    console.error('JWT Verify Failed:', err.message);
-    return res.status(403).json({ message: 'Token không hợp lệ' });
+    console.error('[Auth Error]', err.message);
+    return res.status(403).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
   }
 };
 

@@ -73,10 +73,11 @@ const Login = () => {
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
+
       if (data.success) {
         alert('✅ Đăng nhập thành công!');
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
+        const userWithToken = { ...data.user, token: data.token };
+        localStorage.setItem('user', JSON.stringify(userWithToken));
         navigate('/');
       } else {
         alert(data.message || 'Đăng nhập thất bại.');

@@ -7,13 +7,19 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 
+
+
 const BlogRoutes = require('./routes/BlogRoutes');
 const UserRoutes = require('./routes/UserRoutes');
 const AuthRoutes = require('./routes/AuthRoutes');
 const TestRoutes = require('./routes/TestRoutes');
 const UploadRoutes = require('./routes/UploadRoutes');
 const authenticateToken = require('./middleware/authMiddleware');
+const tagRoutes = require('./routes/TagRoutes');
+const adminRoutes = require('./routes/AdminRoutes');
 require('./db'); // Kết nối MongoD/
+require('dotenv').config();
+
 
 dotenv.config();
 
@@ -32,8 +38,11 @@ app.use(express.json());
 app.use('/api/users', authenticateToken, UserRoutes);
 app.use('/api', UploadRoutes);  // ✅ thêm mới
 
+
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
+app.use('/api/admin', adminRoutes);
+app.use('/api/tags', tagRoutes);
 
 // ✅ Tạo thư mục uploads nếu chưa có
 const uploadsDir = path.join(__dirname, 'uploads');

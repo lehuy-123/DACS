@@ -1,12 +1,10 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const fbAuth = require('../middleware/fbAuth');
+const authenticateToken = require('../middleware/authMiddleware'); // ✅ Middleware xác thực bằng JWT (admin)
 
 // ⚙️ Cấu hình lưu ảnh avatar
 const storage = multer.diskStorage({
@@ -18,6 +16,38 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+
+/**
+ * ✅ GET /api/users - Lấy danh sách người dùng (admin dashboard)
+ * Hỗ trợ: ?search=...&page=1
+ */
+router.get('/', authenticateToken, async (req, res, next) => {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: 'i' } },
+          ],
+        }
+      : {};
+
+    const page = Number(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find(keyword).skip(skip).limit(limit);
+    const total = await User.countDocuments(keyword);
+
+    res.status(200).json({
+      success: true,
+      users,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ✅ GET /api/users/:id - Lấy thông tin người dùng
 router.get('/:id', fbAuth, async (req, res, next) => {
@@ -39,16 +69,6 @@ router.get('/:id', fbAuth, async (req, res, next) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
 // ✅ PUT /api/users/:id - Cập nhật thông tin người dùng
 router.put('/:id', fbAuth, async (req, res, next) => {
   try {
@@ -59,7 +79,6 @@ router.put('/:id', fbAuth, async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
     }
 
-    // Tìm user theo fbId từ token
     const currentUser = await User.findOne({ fbId: req.user.fbId });
 
     if (!currentUser || currentUser._id.toString() !== id.toString()) {
@@ -106,7 +125,3 @@ router.post('/avatar', fbAuth, upload.single('avatar'), async (req, res, next) =
 });
 
 module.exports = router;
-
-
-
-
