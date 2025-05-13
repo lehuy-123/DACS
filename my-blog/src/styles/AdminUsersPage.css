@@ -171,3 +171,30 @@
   font-style: italic;
   color: #666;
 }
+.btn.edit { background-color: #0984e3; color: white; margin-right: 6px; }
+.btn.save { background-color: #00b894; color: white; margin-right: 6px; }
+.btn.cancel { background-color: #636e72; color: white; margin-right: 6px; }
+
+input {
+  padding: 4px;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.btn.toggle-role {
+  color: white;
+  font-weight: 600;
+  margin-right: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn.toggle-role.promote {
+  background-color: #6c5ce7; /* tím đậm */
+}
+
+.btn.toggle-role.demote {
+  background-color: #fd7e14; /* cam nổi bật */
+}

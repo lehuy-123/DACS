@@ -4,12 +4,12 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const fbAuth = require('../middleware/fbAuth');
-const authenticateToken = require('../middleware/authMiddleware'); // ✅ Middleware xác thực bằng JWT (admin)
+const authenticateToken = require('../middleware/authMiddleware');
 
 // ⚙️ Cấu hình lưu ảnh avatar
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Thư mục lưu avatar
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
@@ -19,7 +19,6 @@ const upload = multer({ storage });
 
 /**
  * ✅ GET /api/users - Lấy danh sách người dùng (admin dashboard)
- * Hỗ trợ: ?search=...&page=1
  */
 router.get('/', authenticateToken, async (req, res, next) => {
   try {
@@ -69,7 +68,7 @@ router.get('/:id', fbAuth, async (req, res, next) => {
   }
 });
 
-// ✅ PUT /api/users/:id - Cập nhật thông tin người dùng
+// ✅ PUT /api/users/:id - Cập nhật thông tin người dùng (theo fbAuth)
 router.put('/:id', fbAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -99,7 +98,7 @@ router.put('/:id', fbAuth, async (req, res, next) => {
   }
 });
 
-// ✅ POST /api/users/avatar - Upload avatar người dùng
+// ✅ POST /api/users/avatar - Upload avatar
 router.post('/avatar', fbAuth, upload.single('avatar'), async (req, res, next) => {
   try {
     if (!req.file) {
@@ -118,6 +117,124 @@ router.post('/avatar', fbAuth, upload.single('avatar'), async (req, res, next) =
       success: true,
       message: 'Upload avatar thành công',
       avatarUrl: currentUser.avatar,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ✅ PATCH /api/users/:id/block - Chặn/mở chặn người dùng
+router.patch('/:id/block', authenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (req.user.userId === id) {
+      return res.status(403).json({ message: 'Không thể chặn chính tài khoản của bạn' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    }
+
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: user.isBlocked ? 'Người dùng đã bị chặn' : 'Đã mở chặn người dùng',
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ✅ DELETE /api/users/:id - Xoá user
+router.delete('/:id', authenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (req.user.userId === id) {
+      return res.status(403).json({ message: 'Không thể xoá tài khoản của chính bạn' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    }
+
+    await user.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Xoá người dùng thành công',
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+// ✅ PATCH /api/users/:id/info - Admin cập nhật tên/email người dùng
+router.patch('/:id/info', authenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    if (req.user.userId === id) {
+      return res.status(403).json({ message: 'Không thể chỉnh sửa hồ sơ chính bạn tại đây' });
+    }
+
+    if (!name && !email) {
+      return res.status(400).json({ message: 'Không có dữ liệu cập nhật' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Đã cập nhật thông tin người dùng' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+
+
+
+
+// ✅ PATCH /api/users/:id/role - Thay đổi vai trò user <=> admin
+router.patch('/:id/role', authenticateToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (req.user.userId === id) {
+      return res.status(403).json({ message: 'Không thể thay đổi vai trò của chính bạn' });
+    }
+
+    if (!['user', 'admin'].includes(role)) {
+      return res.status(400).json({ message: 'Vai trò không hợp lệ' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Đã cập nhật vai trò thành "${role}"`,
     });
   } catch (err) {
     next(err);

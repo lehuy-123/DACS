@@ -9,8 +9,13 @@ const AdminUsersPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [editUserId, setEditUserId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
 
-  const token = JSON.parse(localStorage.getItem('user'))?.token;
+  const localUser = JSON.parse(localStorage.getItem('user'));
+  const token = localUser?.token;
+  const currentUserId = localUser?.user?._id;
 
   useEffect(() => {
     if (!token) {
@@ -43,6 +48,7 @@ const AdminUsersPage = () => {
       fetchUsers();
     } catch (err) {
       console.error('❌ Lỗi khi cập nhật trạng thái người dùng:', err);
+      alert('Không thể thay đổi trạng thái người dùng');
     }
   };
 
@@ -57,6 +63,44 @@ const AdminUsersPage = () => {
       fetchUsers();
     } catch (err) {
       console.error('❌ Lỗi khi xoá người dùng:', err);
+      alert('Không thể xoá người dùng');
+    }
+  };
+
+  const handleToggleRole = async (id, currentRole) => {
+    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+    const confirm = window.confirm(`Bạn có chắc muốn đổi vai trò sang "${newRole}"?`);
+    if (!confirm) return;
+
+    try {
+      await axios.patch(`http://localhost:5001/api/users/${id}/role`, {
+        role: newRole
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      fetchUsers();
+    } catch (err) {
+      console.error('❌ Lỗi khi cập nhật vai trò:', err);
+      alert('Không thể cập nhật vai trò người dùng');
+    }
+  };
+
+  const handleSaveEdit = async (id) => {
+    try {
+      await axios.patch(`http://localhost:5001/api/users/${id}/info`, {
+        name: editName,
+        email: editEmail
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setEditUserId(null);
+      setEditName('');
+      setEditEmail('');
+      fetchUsers();
+    } catch (err) {
+      console.error('❌ Lỗi khi cập nhật thông tin người dùng:', err);
+      alert('Không thể cập nhật thông tin người dùng');
     }
   };
 
@@ -72,7 +116,7 @@ const AdminUsersPage = () => {
           placeholder="🔍 Tìm kiếm theo tên hoặc email..."
           value={search}
           onChange={(e) => {
-            setPage(1); // reset về page đầu khi search
+            setPage(1);
             setSearch(e.target.value);
           }}
           className="search-input"
@@ -97,8 +141,24 @@ const AdminUsersPage = () => {
               ) : (
                 users.map(user => (
                   <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
+                    <td>
+                      {editUserId === user._id ? (
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                        />
+                      ) : user.name}
+                    </td>
+                    <td>
+                      {editUserId === user._id ? (
+                        <input
+                          type="email"
+                          value={editEmail}
+                          onChange={(e) => setEditEmail(e.target.value)}
+                        />
+                      ) : user.email}
+                    </td>
                     <td>{user.role === 'admin' ? '👑 Quản trị' : '👤 Người dùng'}</td>
                     <td>
                       <span className={user.isBlocked ? 'status blocked' : 'status active'}>
@@ -106,18 +166,46 @@ const AdminUsersPage = () => {
                       </span>
                     </td>
                     <td>
-                      <button
-                        onClick={() => handleToggleBlock(user._id)}
-                        className={user.isBlocked ? 'btn unblock' : 'btn block'}
-                      >
-                        {user.isBlocked ? 'Mở chặn' : 'Chặn'}
-                      </button>
-                      <button
-                        className="btn danger"
-                        onClick={() => handleDelete(user._id)}
-                      >
-                        Xoá
-                      </button>
+                      {user._id !== currentUserId && (
+                        <>
+                          {editUserId === user._id ? (
+                            <>
+                              <button className="btn save" onClick={() => handleSaveEdit(user._id)}>Lưu</button>
+                              <button className="btn cancel" onClick={() => setEditUserId(null)}>Huỷ</button>
+                            </>
+                          ) : (
+                            <button
+                              className="btn edit"
+                              onClick={() => {
+                                setEditUserId(user._id);
+                                setEditName(user.name);
+                                setEditEmail(user.email);
+                              }}
+                            >
+                              ✏️ Sửa
+                            </button>
+                          )}
+                          <button
+  onClick={() => handleToggleRole(user._id, user.role)}
+  className={`btn toggle-role ${user.role === 'admin' ? 'demote' : 'promote'}`}
+>
+  {user.role === 'admin' ? ' Thu quyền' : ' Cấp quyền'}
+</button>
+
+                          <button
+                            onClick={() => handleToggleBlock(user._id)}
+                            className={user.isBlocked ? 'btn unblock' : 'btn block'}
+                          >
+                            {user.isBlocked ? 'Mở chặn' : 'Chặn'}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(user._id)}
+                            className="btn danger"
+                          >
+                            Xoá
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -126,7 +214,6 @@ const AdminUsersPage = () => {
           </table>
         )}
 
-        {/* Phân trang */}
         {totalPages > 1 && (
           <div className="pagination">
             {Array.from({ length: totalPages }, (_, i) => (
