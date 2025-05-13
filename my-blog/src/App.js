@@ -11,16 +11,15 @@ import BlogByCategory from './pages/BlogByCategory';
 import EditUserProfile from './pages/EditUserProfile';
 import BookmarkList from './pages/BookmarkList';
 
-
 import AdminDashboard from './pages/AdminDashboard';
-import AdminPostsDashboard from './pages/AdminPostsDashboard'; // ✅ Mới thêm
+import AdminPostsDashboard from './pages/AdminPostsDashboard';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminTagsPage from './pages/AdminTagsPage';
 
 import './styles/DarkMode.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-// ✅ Protected route cho admin
+// ✅ Route bảo vệ admin
 const ProtectedAdminRoute = ({ element }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   return user && user.role === 'admin' ? element : <Navigate to="/" replace />;
@@ -45,10 +44,9 @@ function App() {
 
         {/* Trang quản trị Admin */}
         <Route path="/admin" element={<ProtectedAdminRoute element={<AdminDashboard />} />} />
-       
-        <Route path="/admin/manage" element={<ProtectedAdminRoute element={<AdminPostsDashboard />} />} />
-        <Route path="/admin/users"element={<ProtectedAdminRoute element={<AdminUsersPage />} />}/>
-        <Route path="/admin/tags"element={<ProtectedAdminRoute element={<AdminTagsPage />} />} />
+        <Route path="/admin/posts" element={<ProtectedAdminRoute element={<AdminPostsDashboard />} />} />
+        <Route path="/admin/users" element={<ProtectedAdminRoute element={<AdminUsersPage />} />} />
+        <Route path="/admin/tags" element={<ProtectedAdminRoute element={<AdminTagsPage />} />} />
       </Routes>
     </Router>
   );

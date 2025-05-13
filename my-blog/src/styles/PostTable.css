@@ -1,36 +1,82 @@
-.post-table table {
+.post-table-container {
+  padding: 10px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.search-input {
+  padding: 6px;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.post-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .post-table th,
 .post-table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
-.post-table select {
+.post-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+.status.public {
+  color: green;
+  font-weight: bold;
+}
+
+.status.draft {
+  color: orange;
+}
+
+.status.hidden {
+  color: red;
+}
+
+.loading-text,
+.no-data {
+  padding: 12px;
+  font-style: italic;
+  color: gray;
+}
+
+.btn.small {
+  padding: 5px 8px;
+  font-size: 13px;
+  border-radius: 4px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  margin-right: 6px;
+}
+
+.pagination {
+  margin-top: 16px;
+}
+
+.pagination button {
   padding: 6px 10px;
+  margin-right: 5px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  background: white;
 }
 
-.post-table button {
-  margin-right: 8px;
-  padding: 6px 10px;
-  border: none;
-  background-color: #6c5ce7;
+.pagination button.active {
+  background-color: #3498db;
   color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.post-table button.danger {
-  background-color: #d63031;
+  font-weight: bold;
 }
