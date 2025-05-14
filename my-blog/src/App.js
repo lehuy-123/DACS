@@ -19,7 +19,7 @@ import AdminTagsPage from './pages/AdminTagsPage';
 import './styles/DarkMode.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-// ✅ Route bảo vệ admin
+// ✅ Route bảo vệ cho admin
 const ProtectedAdminRoute = ({ element }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   return user && user.role === 'admin' ? element : <Navigate to="/" replace />;

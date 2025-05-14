@@ -10,6 +10,7 @@ const path = require('path');
 
 
 const BlogRoutes = require('./routes/BlogRoutes');
+const postRoutes = require('./routes/PostRoutes');
 const UserRoutes = require('./routes/UserRoutes');
 const AuthRoutes = require('./routes/AuthRoutes');
 const TestRoutes = require('./routes/TestRoutes');
@@ -34,6 +35,7 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 app.use(express.json());
+app.use('/api/posts', postRoutes);
 
 app.use('/api/users', authenticateToken, UserRoutes);
 app.use('/api', UploadRoutes);  // ✅ thêm mới

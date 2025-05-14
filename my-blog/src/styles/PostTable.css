@@ -80,3 +80,62 @@
   color: white;
   font-weight: bold;
 }
+.btn.approve {
+  background-color: #28a745;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn.reject {
+  background-color: #dc3545;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn.small {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.filter-container {
+  margin-bottom: 15px;
+}
+
+.filter-container label {
+  margin-right: 10px;
+}
+
+.filter-container select {
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Đảm bảo CSS cho các nút */
+.btn.approve {
+  background-color: #28a745;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn.reject {
+  background-color: #dc3545;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn.small {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.edit {
+  background-color: #007bff;
+  color: white;
+}

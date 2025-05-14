@@ -1,27 +1,18 @@
 import React from 'react';
-import '../styles/TabSwitcher.css';
+import '../styles/AdminTabSwitcher.css';
 
-const AdminTabSwitcher = ({ currentTab, onTabChange }) => {
+const AdminTabSwitcher = ({ tabs, currentTab, onTabChange }) => {
   return (
-    <div className="tab-switcher">
-      <button
-        className={currentTab === 'posts' ? 'active' : ''}
-        onClick={() => onTabChange('posts')}
-      >
-        📄 Tất cả bài viết
-      </button>
-      <button
-        className={currentTab === 'review' ? 'active' : ''}
-        onClick={() => onTabChange('review')}
-      >
-        ⏳ Bài chờ duyệt
-      </button>
-      <button
-        className={currentTab === 'comments' ? 'active' : ''}
-        onClick={() => onTabChange('comments')}
-      >
-        💬 Bình luận
-      </button>
+    <div className="admin-tab-switcher">
+      {tabs.map((tab) => (
+        <button
+          key={tab.key}
+          className={`tab-btn ${currentTab === tab.key ? 'active' : ''}`}
+          onClick={() => onTabChange(tab.key)}
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
   );
 };

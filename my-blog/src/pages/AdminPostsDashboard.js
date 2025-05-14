@@ -1,38 +1,48 @@
 import React, { useState } from 'react';
 import SidebarAdmin from '../components/SidebarAdmin';
 import AdminTabSwitcher from '../components/AdminTabSwitcher';
-import PostTable from './PostTable';
-import ReviewTable from '../components/ReviewTable';
-import CommentTable from '../components/CommentTable';
+import ApprovedPostTable from './ApprovedPostTable';
+import PendingPostTable from './PendingPostTable';
+import RejectedPostTable from './RejectedPostTable';
 import '../styles/AdminPostsDashboard.css';
 
 const AdminPostsDashboard = () => {
-  const [tab, setTab] = useState('posts');
+  const [tab, setTab] = useState('pending');
 
   const renderTabContent = () => {
+    console.log("📌 Tab hiện tại:", tab);
     switch (tab) {
-      case 'posts':
-        return <PostTable />;
-      case 'review':
-        return <ReviewTable />;
-      case 'comments':
-        return <CommentTable />;
+      case 'approved':
+        return <ApprovedPostTable />;
+      case 'pending':
+        return <PendingPostTable />;
+      case 'rejected':
+        return <RejectedPostTable />;
       default:
-        return <p>Không tìm thấy tab phù hợp</p>;
+        return <p className="error-text">❌ Không tìm thấy tab phù hợp (tab = {tab}).</p>;
     }
   };
 
   return (
     <div className="admin-container">
       <SidebarAdmin />
-
       <div className="admin-content">
-        <h1 className="dashboard-title">📝 Quản lý nội dung</h1>
-        <AdminTabSwitcher currentTab={tab} onTabChange={setTab} />
+        <h1 className="dashboard-title">📚 Quản lý bài viết</h1>
 
-        <div className="tab-content">
-          {renderTabContent()}
-        </div>
+        <AdminTabSwitcher
+          currentTab={tab}
+          onTabChange={(newTab) => {
+            console.log("🔄 Tab được chọn:", newTab);
+            setTab(newTab);
+          }}
+          tabs={[
+            { key: 'approved', label: '✅ Đã duyệt' },
+            { key: 'pending', label: '⏳ Chờ duyệt' },
+            { key: 'rejected', label: '❌ Từ chối' }
+          ]}
+        />
+
+        <div className="tab-content">{renderTabContent()}</div>
       </div>
     </div>
   );
