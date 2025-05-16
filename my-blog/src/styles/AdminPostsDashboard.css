@@ -1,79 +1,9 @@
-
-.admin-container {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
-
-.admin-content {
-  flex-grow: 1;
-  padding: 32px;
-  background-color: #fff;
-  border-left: 1px solid #ddd;
-}
-
 .dashboard-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 24px;
-  color: #343a40;
+  margin-bottom: 16px;
 }
 
 .tab-content {
-  margin-top: 20px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.table th,
-.table td {
-  padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.table th {
-  background-color: #f1f3f5;
-  font-weight: 600;
-  color: #495057;
-}
-
-.table tr:hover {
-  background-color: #f8f9fa;
-}
-
-button {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-button:first-of-type {
-  background-color: #28a745;
-  color: #fff;
-}
-
-button:last-of-type {
-  background-color: #dc3545;
-  color: #fff;
-  margin-left: 8px;
-}
-
-.error-text {
-  color: red;
-  font-weight: bold;
+  margin-top: 16px;
 }

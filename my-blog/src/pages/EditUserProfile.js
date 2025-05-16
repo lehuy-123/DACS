@@ -15,10 +15,22 @@ const EditUserProfile = () => {
   const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
-  // Hàm fetch thông tin người dùng
+  // ✅ Lấy token đúng cách
+  const getToken = () => {
+    const userData = localStorage.getItem('user');
+    if (!userData) return null;
+    try {
+      const parsed = JSON.parse(userData);
+      return parsed.token || null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // ✅ Hàm fetch thông tin người dùng
   const fetchUser = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (!token) {
         setError('Bạn chưa đăng nhập. Vui lòng đăng nhập lại.');
         navigate('/login');
@@ -34,8 +46,9 @@ const EditUserProfile = () => {
       setName(user.name || '');
       setEmail(user.email || '');
       setAvatarPreview(user.avatar ? `http://localhost:5001${user.avatar}` : null);
-      // Lưu thông tin người dùng mới vào localStorage
-      localStorage.setItem('user', JSON.stringify(user));
+
+      // ✅ Lưu lại user mới vào localStorage
+      localStorage.setItem('user', JSON.stringify({ ...user, token }));
     } catch (err) {
       console.error('Lỗi khi fetch user:', err);
       setError('Không thể tải thông tin người dùng.');
@@ -66,7 +79,7 @@ const EditUserProfile = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (!token) {
         setError('Bạn chưa đăng nhập.');
         navigate('/login');
@@ -89,7 +102,7 @@ const EditUserProfile = () => {
 
       if (res.data.success) {
         setSuccess('Cập nhật thành công!');
-        await fetchUser(); // Cập nhật state local và localStorage
+        await fetchUser();
       } else {
         setError(res.data.message || 'Có lỗi xảy ra.');
       }

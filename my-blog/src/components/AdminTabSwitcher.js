@@ -8,7 +8,7 @@ const AdminTabSwitcher = ({ tabs, currentTab, onTabChange }) => {
         <button
           key={tab.key}
           className={`tab-btn ${currentTab === tab.key ? 'active' : ''}`}
-          onClick={() => onTabChange(tab.key)}
+          onClick={() => onTabChange(tab.key)} // ⚠️ Phải truyền tab.key, không phải tab.label
         >
           {tab.label}
         </button>
