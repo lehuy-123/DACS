@@ -9,15 +9,17 @@ const path = require('path');
 
 
 
+
 const BlogRoutes = require('./routes/BlogRoutes');
 const postRoutes = require('./routes/PostRoutes');
 const UserRoutes = require('./routes/UserRoutes');
 const AuthRoutes = require('./routes/AuthRoutes');
+const adminRoutes = require('./routes/AdminRoutes');
 const TestRoutes = require('./routes/TestRoutes');
 const UploadRoutes = require('./routes/UploadRoutes');
 const authenticateToken = require('./middleware/authMiddleware');
 const tagRoutes = require('./routes/TagRoutes');
-const adminRoutes = require('./routes/AdminRoutes');
+
 require('./db'); // Kết nối MongoD/
 require('dotenv').config();
 

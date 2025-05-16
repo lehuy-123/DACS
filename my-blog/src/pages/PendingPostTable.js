@@ -26,8 +26,10 @@ const PendingPostTable = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPendingPosts(pendingPosts.filter(post => post._id !== id));
+      alert("✅ Duyệt bài viết thành công");
     } catch (err) {
       console.error('❌ Lỗi khi duyệt bài viết:', err);
+      alert("❌ Duyệt bài viết thất bại");
     }
   };
 
@@ -37,8 +39,10 @@ const PendingPostTable = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPendingPosts(pendingPosts.filter(post => post._id !== id));
+      alert("⚠️ Bài viết đã bị từ chối");
     } catch (err) {
       console.error('❌ Lỗi khi từ chối bài viết:', err);
+      alert("❌ Từ chối bài viết thất bại");
     }
   };
 

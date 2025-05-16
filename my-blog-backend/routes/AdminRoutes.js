@@ -1,4 +1,4 @@
-
+// routes/AdminRoutes.js
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middleware/authenticateToken');
@@ -44,7 +44,7 @@ router.get('/posts/:status', authenticateToken, checkAdmin, async (req, res) => 
 });
 
 // ✅ Duyệt bài viết
-router.put('/posts/approve/:id', authenticateToken, checkAdmin, async (req, res) => {
+router.put('/posts/:id/approve', authenticateToken, checkAdmin, async (req, res) => {
   try {
     const post = await Blog.findByIdAndUpdate(req.params.id, { status: 'approved' }, { new: true });
     res.json(post);
@@ -54,7 +54,7 @@ router.put('/posts/approve/:id', authenticateToken, checkAdmin, async (req, res)
 });
 
 // ❌ Từ chối bài viết
-router.put('/posts/reject/:id', authenticateToken, checkAdmin, async (req, res) => {
+router.put('/posts/:id/reject', authenticateToken, checkAdmin, async (req, res) => {
   try {
     const post = await Blog.findByIdAndUpdate(req.params.id, { status: 'rejected' }, { new: true });
     res.json(post);
