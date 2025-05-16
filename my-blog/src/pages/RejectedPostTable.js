@@ -35,7 +35,7 @@ const RejectedPostTable = () => {
           {rejectedPosts.map((post) => (
             <tr key={post._id}>
               <td>{post.title}</td>
-              <td>{post.author?.name || 'Ẩn danh'}</td>
+              <td>{post.userId?.name || 'Ẩn danh'}</td> {/* ✅ ĐÃ SỬA CHỖ NÀY */}
               <td>{new Date(post.updatedAt).toLocaleString()}</td>
             </tr>
           ))}

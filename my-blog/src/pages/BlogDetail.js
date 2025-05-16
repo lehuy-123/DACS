@@ -20,6 +20,7 @@ const BlogDetail = () => {
       try {
         const response = await axios.get(`http://localhost:5001/api/blogs/${id}`);
         setBlog(response.data.data);
+        console.log("📄 Blog chi tiết:", response.data.data); // ✅ Thêm dòng này
         setLoading(false);
 
         // Tăng lượt xem
@@ -117,8 +118,9 @@ const BlogDetail = () => {
               <h2 className="blog-detail-title">{blog.title}</h2>
 
               <div className="blog-author" style={{ margin: '10px 0', fontSize: '15px', color: '#666' }}>
-                <strong>Tác giả:</strong> {blog.author?.name || 'Ẩn danh'}
-              </div>
+  <strong>Tác giả:</strong> {blog.userId?.name || 'Ẩn danh'}
+</div>
+
 
               <div className="blog-content-markdown">
                 <ReactMarkdown

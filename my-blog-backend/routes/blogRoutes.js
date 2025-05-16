@@ -48,7 +48,10 @@ router.get('/', async (req, res, next) => {
     if (tag) query.tags = { $in: [tag] };
     if (category) query.category = category;
 
-    const blogs = await Blog.find(query).sort({ createdAt: -1 });
+    const blogs = await Blog.find(query)
+      .populate('userId', 'name')
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
       data: blogs,
@@ -66,7 +69,10 @@ router.get('/user/:userId', async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
     }
-    const blogs = await Blog.find({ userId: userId }).sort({ createdAt: -1 });
+    const blogs = await Blog.find({ userId: userId })
+      .populate('userId', 'name')
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
       data: blogs,
@@ -100,17 +106,32 @@ router.patch('/:id/approve', async (req, res, next) => {
   }
 });
 
-// Lấy bài viết liên quan
+// GET /api/blogs/:id - Lấy chi tiết bài viết
+router.get('/:id', async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate('userId', 'name');
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
+    }
+    res.status(200).json({ success: true, data: blog });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// GET /api/blogs/:id/related - Lấy bài viết liên quan
 router.get('/:id/related', async (req, res, next) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id).populate('userId', 'name');
+
     if (!blog) return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
     let relatedBlogs = [];
     if (blog.tags && blog.tags.length > 0) {
       relatedBlogs = await Blog.find({
         _id: { $ne: blog._id },
         tags: { $in: blog.tags }
-      }).limit(5);
+      }).limit(5).populate('userId', 'name');
     }
     res.status(200).json({
       success: true,
@@ -119,20 +140,6 @@ router.get('/:id/related', async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-  }
-});
-
-// GET /api/blogs/:id - Lấy chi tiết bài viết
-router.get('/:id', async (req, res) => {
-  try {
-    const blog = await Blog.findById(req.params.id);
-    if (!blog) {
-      return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
-    }
-    res.status(200).json({ success: true, data: blog });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -146,12 +153,14 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
     }
     const blog = await Blog.findById(id);
     if (!blog) return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
+
     blog.title = title || blog.title;
     blog.content = content || blog.content;
     blog.tags = tags ? (typeof tags === 'string' ? tags.split(',').map(tag => tag.trim()) : tags) : blog.tags;
     blog.category = category || blog.category;
     blog.status = status || blog.status;
     blog.image = req.file ? `/uploads/${req.file.filename}` : blog.image;
+
     await blog.save();
     res.status(200).json({ success: true, data: blog, message: 'Cập nhật bài viết thành công' });
   } catch (error) {
@@ -171,19 +180,6 @@ router.delete('/:id', async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
     }
     res.status(200).json({ success: true, message: 'Xóa bài viết thành công' });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Upload ảnh
-router.post('/upload', upload.single('image'), async (req, res, next) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'Vui lòng gửi file ảnh' });
-    }
-    const imageUrl = `http://localhost:5001/uploads/${req.file.filename}`;
-    res.status(200).json({ success: true, data: { imageUrl }, message: 'Upload ảnh thành công' });
   } catch (error) {
     next(error);
   }

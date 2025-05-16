@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // ✅ Thêm Link để chuyển trang chi tiết
 import '../styles/PendingPostTable.css';
 
 const PendingPostTable = () => {
@@ -61,8 +62,15 @@ const PendingPostTable = () => {
         <tbody>
           {pendingPosts.map((post) => (
             <tr key={post._id}>
-              <td>{post.title}</td>
-              <td>{post.author?.name || 'Ẩn danh'}</td>
+              <td>
+                <Link
+                  to={`/admin/posts/${post._id}`}
+                  style={{ color: "#1a73e8", textDecoration: "underline", cursor: "pointer" }}
+                >
+                  {post.title}
+                </Link>
+              </td>
+              <td>{post.userId?.name || 'Ẩn danh'}</td>
               <td>{new Date(post.createdAt).toLocaleString()}</td>
               <td>
                 <button onClick={() => handleApprove(post._id)} className="btn-approve">Duyệt</button>

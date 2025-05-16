@@ -59,7 +59,8 @@ const blogSchema = new mongoose.Schema({
     default: Date.now
   },
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,   // ✅ Đổi từ String → ObjectId
+    ref: 'User',
     required: true
   }
 });

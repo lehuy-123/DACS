@@ -34,8 +34,15 @@ const ApprovedPostTable = () => {
         <tbody>
           {approvedPosts.map((post) => (
             <tr key={post._id}>
-              <td>{post.title}</td>
-              <td>{post.author?.name || 'Ẩn danh'}</td>
+              <td>
+  <a
+    href={`/admin/posts/${post._id}`}
+    style={{ color: "#1a73e8", textDecoration: "underline", cursor: "pointer" }}
+  >
+    {post.title}
+  </a>
+</td>
+              <td>{post.userId?.name || 'Ẩn danh'}</td> {/* ✅ ĐÃ SỬA CHỖ NÀY */}
               <td>{new Date(post.updatedAt).toLocaleString()}</td>
             </tr>
           ))}

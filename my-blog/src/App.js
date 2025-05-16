@@ -10,6 +10,7 @@ import BlogByTag from './pages/BlogByTag';
 import BlogByCategory from './pages/BlogByCategory';
 import EditUserProfile from './pages/EditUserProfile';
 import BookmarkList from './pages/BookmarkList';
+import AdminPostDetail from './pages/AdminPostDetail';
 
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPostsDashboard from './pages/AdminPostsDashboard';
@@ -47,6 +48,7 @@ function App() {
         <Route path="/admin/posts" element={<ProtectedAdminRoute element={<AdminPostsDashboard />} />} />
         <Route path="/admin/users" element={<ProtectedAdminRoute element={<AdminUsersPage />} />} />
         <Route path="/admin/tags" element={<ProtectedAdminRoute element={<AdminTagsPage />} />} />
+        <Route path="/admin/posts/:id" element={<AdminPostDetail />} />
       </Routes>
     </Router>
   );

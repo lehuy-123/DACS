@@ -33,15 +33,19 @@ router.get('/stats', authenticateToken, checkAdmin, async (req, res) => {
 });
 
 // 📄 Lấy danh sách bài viết theo trạng thái
+// 📄 Lấy danh sách bài viết theo trạng thái
 router.get('/posts/:status', authenticateToken, checkAdmin, async (req, res) => {
   const status = req.params.status;
   try {
-    const posts = await Blog.find({ status }).sort({ createdAt: -1 });
+    const posts = await Blog.find({ status })
+      .populate('userId', 'name') // ✅ Sửa tại đây
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     res.status(500).json({ message: 'Lỗi khi lấy bài viết' });
   }
 });
+
 
 // ✅ Duyệt bài viết
 router.put('/posts/:id/approve', authenticateToken, checkAdmin, async (req, res) => {
@@ -72,5 +76,20 @@ router.delete('/posts/:id', authenticateToken, checkAdmin, async (req, res) => {
     res.status(500).json({ message: 'Lỗi xoá bài viết' });
   }
 });
+
+
+
+
+router.put('/posts/:id/draft', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const post = await Blog.findByIdAndUpdate(req.params.id, { status: 'draft' }, { new: true });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi ẩn bài viết' });
+  }
+});
+  
+
+
 
 module.exports = router;

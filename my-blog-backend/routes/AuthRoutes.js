@@ -224,4 +224,8 @@ router.put('/update-profile', authMiddleware, upload.single('avatar'), async (re
   }
 });
 
+
+
+
+
 module.exports = router;
